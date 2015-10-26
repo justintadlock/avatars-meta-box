@@ -63,8 +63,8 @@ final class AMB_Meta_Box_Avatars {
 		if ( ! isset( $screen->post_type ) || ! post_type_supports( $screen->post_type, 'author' ) )
 			return;
 
-		wp_enqueue_script( 'amb-meta-box' );
-		wp_enqueue_style(  'amb-meta-box' );
+		wp_enqueue_script( 'jquery' );
+		wp_enqueue_style( 'amb-meta-box' );
 	}
 
 	/**
@@ -122,6 +122,22 @@ final class AMB_Meta_Box_Avatars {
 		<?php endforeach; ?>
 
 		</div><!-- .amb-avatars -->
+
+		<script type="text/javascript">
+			jQuery( document ).ready( function() {
+
+				// Copies the selected author display name to the box header.
+				jQuery( '.amb-which-author' ).text( jQuery( '[name="post_author_override"]:checked + span' ).text() );
+
+				// Checks for changes on the input and updates the display name in the box header.
+				jQuery( '[name="post_author_override"]' ).change(
+					function() {
+						jQuery( '.amb-which-author' ).text( jQuery( '[name="post_author_override"]:checked + span' ).text() );
+					}
+				);
+
+			} ); // ready()
+		</script>
 	<?php }
 
 	/**

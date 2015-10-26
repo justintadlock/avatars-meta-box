@@ -130,8 +130,6 @@ final class Avatars_Meta_Box_Plugin {
 	 */
 	public function admin_register_scripts() {
 
-		wp_register_script( 'amb-meta-box', $this->dir_uri . 'js/avatars-meta-box.js', array( 'jquery' ), true );
-
 		wp_register_style( 'amb-meta-box', $this->dir_uri . 'css/avatars-meta-box.css' );
 	}
 
