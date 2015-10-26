@@ -17,7 +17,7 @@
  * @package   AvatarsMetaBox
  * @version   1.0.0
  * @author    Justin Tadlock <justin@justintadlock.com>
- * @copyright Copyright (c) 2013, Justin Tadlock
+ * @copyright Copyright (c) 2015, Justin Tadlock
  * @link      http://themehybrid.com/plugins/avatars-meta-box
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
@@ -48,24 +48,6 @@ final class Avatars_Meta_Box_Plugin {
 	 * @var    string
 	 */
 	public $dir_uri = '';
-
-	/**
-	 * JavaScript directory URI.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @var    string
-	 */
-	public $js_uri = '';
-
-	/**
-	 * CSS directory URI.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @var    string
-	 */
-	public $css_uri = '';
 
 	/**
 	 * Returns the instance.
@@ -108,9 +90,6 @@ final class Avatars_Meta_Box_Plugin {
 
 		$this->dir_path = trailingslashit( plugin_dir_path( __FILE__ ) );
 		$this->dir_uri  = trailingslashit( plugin_dir_url(  __FILE__ ) );
-
-		$this->js_uri  = trailingslashit( $this->dir_uri . 'js'  );
-		$this->css_uri = trailingslashit( $this->dir_uri . 'css' );
 	}
 
 	/**
@@ -122,10 +101,8 @@ final class Avatars_Meta_Box_Plugin {
 	 */
 	private function includes() {
 
-		// Load admin files.
-		if ( is_admin() ) {
+		if ( is_admin() )
 			require_once( $this->dir_path . 'admin/class-meta-box-avatars.php' );
-		}
 	}
 
 	/**
@@ -153,9 +130,9 @@ final class Avatars_Meta_Box_Plugin {
 	 */
 	public function admin_register_scripts() {
 
-		wp_register_script( 'amb-meta-box', $this->js_uri . 'avatars-meta-box.js', array( 'jquery' ), true );
+		wp_register_script( 'amb-meta-box', $this->dir_uri . 'js/avatars-meta-box.js', array( 'jquery' ), true );
 
-		wp_register_style( 'amb-meta-box', $this->css_uri . 'avatars-meta-box.css' );
+		wp_register_style( 'amb-meta-box', $this->dir_uri . 'css/avatars-meta-box.css' );
 	}
 
 	/**
@@ -172,8 +149,7 @@ final class Avatars_Meta_Box_Plugin {
 }
 
 /**
- * Gets the instance of the main plugin class.  This function is useful for quickly grabbing data
- * used throughout the plugin.
+ * Gets the instance of the main plugin class.
  *
  * @since  1.0.0
  * @access public

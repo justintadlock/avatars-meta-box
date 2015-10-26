@@ -1,5 +1,21 @@
 <?php
+/**
+ * Handles the author avatars meta box.
+ *
+ * @package   AvatarsMetaBox
+ * @version   1.0.0
+ * @author    Justin Tadlock <justin@justintadlock.com>
+ * @copyright Copyright (c) 2015, Justin Tadlock
+ * @link      http://themehybrid.com/plugins/avatars-meta-box
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ */
 
+/**
+ * Meta box class.
+ *
+ * @since  1.0.0
+ * @access public
+ */
 final class AMB_Meta_Box_Avatars {
 
 	/**
@@ -28,13 +44,22 @@ final class AMB_Meta_Box_Avatars {
 		// Add custom meta boxes.
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 
+		// Enqueue scripts/styles.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 	}
 
+	/**
+	 * Loads scripts and styles.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return void
+	 */
 	public function enqueue() {
 
 		$screen = get_current_screen();
 
+		// If the post type doesn't support `author`, bail.
 		if ( ! isset( $screen->post_type ) || ! post_type_supports( $screen->post_type, 'author' ) )
 			return;
 
@@ -51,11 +76,14 @@ final class AMB_Meta_Box_Avatars {
 	 */
 	public function add_meta_boxes( $post_type ) {
 
+		// If the post type doesn't support `author`, bail.
 		if ( ! post_type_supports( $post_type, 'author' ) )
 			return;
 
+		// Remove the core meta box.
 		remove_meta_box( 'authordiv', $post_type, 'normal' );
 
+		// Add our custom meta box.
 		add_meta_box( 'amb-avatars-author', sprintf( esc_html__( 'Author: %s', 'avatars-meta-box' ), '<span class="amb-which-author"></span>' ), array( $this, 'meta_box' ), $post_type, 'normal', 'default' );
 	}
 
@@ -65,20 +93,21 @@ final class AMB_Meta_Box_Avatars {
 	 * @since  1.0.0
 	 * @access public
 	 * @param  object  $post
-	 * @global object  $wp_roles
 	 * @return void
 	 */
 	public function meta_box( $post ) {
 
-		//$author = new WP_User( $post->post_author );
-
+		// Set up the main arguments for `get_users()`.
 		$args = array( 'who' => 'authors' );
 
 		// WP version 4.4.0 check. User `role__in` if we can.
 		if ( method_exists( 'WP_User_Query', 'fill_query_vars' ) )
 			$args = array( 'role__in' => $this->get_roles( $post->post_type ) );
 
+		// Get the users allowed to be post author.
 		$users = get_users( $args ); ?>
+
+		<div class="amb-avatars">
 
 		<?php foreach ( $users as $user ) : ?>
 
@@ -91,20 +120,28 @@ final class AMB_Meta_Box_Avatars {
 			</label>
 
 		<?php endforeach; ?>
+
+		</div><!-- .amb-avatars -->
 	<?php }
 
+	/**
+	 * Returns an array of user roles that are allowed to edit, publish, or create
+	 * posts of the given post type.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @param  string  $post_type
+	 * @global object  $wp_roles
+	 * @return array
+	 */
 	public function get_roles( $post_type ) {
 		global $wp_roles;
 
 		$roles = array();
 		$type  = get_post_type_object( $post_type );
 
-		$caps = array(
-			$type->cap->edit_posts,
-			$type->cap->publish_posts,
-			$type->cap->create_posts
-		);
-
+		// Get the post type object caps.
+		$caps = array( $type->cap->edit_posts, $type->cap->publish_posts, $type->cap->create_posts );
 		$caps = array_unique( $caps );
 
 		// Loop through the available roles.
@@ -112,7 +149,7 @@ final class AMB_Meta_Box_Avatars {
 
 			foreach ( $caps as $cap ) {
 
-				// If the role is granted the edit posts cap, add it.
+				// If the role is granted the cap, add it.
 				if ( isset( $role['capabilities'][ $cap ] ) && true === $role['capabilities'][ $cap ] ) {
 					$roles[] = $name;
 					break;
