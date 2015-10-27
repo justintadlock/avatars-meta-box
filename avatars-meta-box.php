@@ -3,7 +3,7 @@
  * Plugin Name: Avatars Meta Box
  * Plugin URI:  http://themehybrid.com/plugins/avatars-meta-box
  * Description: Select post author by clicking on their avatar on the edit post screen instead of the default drop-down select field.
- * Version:     1.0.0-beta-1
+ * Version:     1.0.0
  * Author:      Justin Tadlock
  * Author URI:  http://themehybrid.com
  * Text Domain: avatars-meta-box
